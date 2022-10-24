@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
-import { fetcher } from "../../config";
+import { fetcher, tmdbAPI } from "../../config";
 import { SwiperSlide, Swiper } from "swiper/react";
 import BannerItem from "./BannerItem";
-import { API_KEY } from "../../Constant";
 
 const Banner = () => {
-  const { data } = useSWR(
-    `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`,
-    fetcher
-  );
+  const { data } = useSWR(tmdbAPI.getMovieList("upcoming"), fetcher);
   const movies = data?.results || [];
   const [genres, setGenres] = useState([]);
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`
-    )
+    fetch(tmdbAPI.getMovieList2)
       .then((res) => res.json())
       .then((data) => {
         if (data) setGenres(data.genres);

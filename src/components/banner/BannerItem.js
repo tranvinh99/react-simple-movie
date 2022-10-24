@@ -1,10 +1,15 @@
+import { useNavigate } from "react-router-dom";
+import { tmdbAPI } from "../../config";
+import Button from "../button/Button";
+
 export default function BannerItem({ item }) {
-  const { poster_path, title, genre_ids } = item;
+  const { poster_path, title, id } = item;
+  const navigate = useNavigate();
   return (
     <div className="w-full h-full rounded-lg relative">
       <div className="overlay absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.5)] to-[rgba(0,0,0,0.5)] rounded-lg"></div>
       <img
-        src={`https://image.tmdb.org/t/p/w500/${poster_path}`}
+        src={tmdbAPI.image500w(poster_path)}
         alt=""
         className="w-full h-full object-cover rounded-lg object-center"
       />
@@ -21,9 +26,7 @@ export default function BannerItem({ item }) {
             Adventure
           </span>
         </div>
-        <button className="py-3 px-6 rounded-lg bg-primary text-white font-medium">
-          Watch Now
-        </button>
+        <Button onClick={() => navigate(`/movie/${id}`)}>Watch Now</Button>
       </div>
     </div>
   );

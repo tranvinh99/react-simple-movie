@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import Banner from "../components/banner/Banner";
 import MovieList from "../components/movie/MovieList";
-
 function HomePage() {
   return (
     <Fragment>

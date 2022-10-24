@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import MovieCard from "../components/movie/MovieCard";
-import { fetcher } from "../config";
-import { API_KEY } from "../Constant";
+import { fetcher, tmdbAPI } from "../config";
 import useDebounce from "../hooks/useDebounce";
 import ReactPaginate from "react-paginate";
 
@@ -12,9 +11,7 @@ const MoviePage = () => {
   const [itemOffset, setItemOffset] = useState(0);
   const [nextPage, setNextPage] = useState(1);
   const [filter, setFilter] = useState("");
-  const [url, setUrl] = useState(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${nextPage}`
-  );
+  const [url, setUrl] = useState(tmdbAPI.pageSetup(nextPage, "popular"));
   const filterDebounce = useDebounce(filter, 500);
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -22,14 +19,8 @@ const MoviePage = () => {
   const { data, error } = useSWR(url, fetcher);
   const loading = !data && !error;
   useEffect(() => {
-    if (filterDebounce)
-      setUrl(
-        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${filterDebounce}&page=${nextPage}`
-      );
-    else
-      setUrl(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&page=${nextPage}`
-      );
+    if (filterDebounce) setUrl(tmdbAPI.nextPage(filterDebounce, nextPage));
+    else setUrl(tmdbAPI.pageSetup(nextPage, "popular"));
   }, [filterDebounce, nextPage]);
   const movies = data?.results || [];
   useEffect(() => {
@@ -42,7 +33,6 @@ const MoviePage = () => {
     setItemOffset(newOffset);
     setNextPage(event.selected + 1);
   };
-  console.log(data);
   return (
     <div className="py-10 page-container">
       <div className="flex mb-10">
